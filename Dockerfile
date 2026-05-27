@@ -1,7 +1,7 @@
 FROM python:3.9-slim
 
 # Force rebuild - change this timestamp to invalidate cache
-LABEL rebuild="2026-05-27-migrations-fix"
+LABEL rebuild="2026-05-27-runtime-migrations"
 
 WORKDIR /app
 
@@ -18,11 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files
 COPY . .
 
-# Collect static files
+# Collect static files ONLY (no migrations at build time)
 RUN python manage.py collectstatic --noinput
-
-# ALWAYS run migrations (don't cache this step)
-RUN python manage.py migrate --noinput 2>&1 | tee /tmp/migrate.log && cat /tmp/migrate.log
 
 # Create logs directory
 RUN mkdir -p logs
@@ -30,5 +27,5 @@ RUN mkdir -p logs
 # Expose port
 EXPOSE 8000
 
-# Run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
+# Run migrations at runtime, then start gunicorn
+CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:8000 config.wsgi:application"]

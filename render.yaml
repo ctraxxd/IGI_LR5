@@ -5,8 +5,7 @@ services:
     region: frankfurt
     plan: starter
     branch: main
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput
-    startCommand: gunicorn config.wsgi:application
+    dockerfilePath: Dockerfile
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.0
@@ -22,6 +21,8 @@ services:
         value: "*"
       - key: RENDER
         value: true
+      - key: TIME_ZONE
+        value: Europe/Minsk
     disk:
       name: logs
       mountPath: /app/logs
