@@ -27,5 +27,5 @@ RUN mkdir -p logs
 # Expose port
 EXPOSE 8000
 
-# Run migrations at runtime, then start gunicorn
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:8000 config.wsgi:application"]
+# Run migrations at runtime, then seed data, then start gunicorn
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py seed_data && gunicorn --bind 0.0.0.0:8000 config.wsgi:application"]
