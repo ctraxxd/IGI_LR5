@@ -18,6 +18,9 @@ COPY . .
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
+# Run database migrations
+RUN python manage.py migrate --noinput
+
 # Create logs directory
 RUN mkdir -p logs
 
