@@ -2,8 +2,8 @@
 {% block title %}{{ exhibit.name }} - Museum{% endblock %}
 {% block content %}
 <div class="card">
-    {% if exhibit.photo %}
-    <img src="{{ exhibit.photo }}" class="card-img-top" alt="{{ exhibit.name }}" style="max-height: 400px; object-fit: contain;">
+    {% if exhibit.photo_url %}
+    <img src="{{ exhibit.photo_url }}" class="card-img-top" alt="{{ exhibit.name }}" style="max-height: 400px; object-fit: contain;">
     {% endif %}
     <div class="card-header">
         <h4>{{ exhibit.name }}</h4>
@@ -23,8 +23,8 @@
     </div>
 </div>
 <div class="alert alert-info mt-4">
-    <strong>Page generated:</strong><br>
-    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
-    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+    <strong>Current Time:</strong><br>
+    Server: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Minsk (Europe/Minsk): {{ current_time_local|date:"d/m/Y H:i:s" }}
 </div>
 {% endblock %}

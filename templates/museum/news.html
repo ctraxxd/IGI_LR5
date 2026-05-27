@@ -1,7 +1,7 @@
 {% extends 'museum/base.html' %}
 {% block title %}Exhibitions - Museum{% endblock %}
 {% block content %}
-<h1>Current Exhibitions</h1>
+<h1>Exhibitions</h1>
 <div class="row mt-4">
     {% for exhibition in exhibitions %}
     <div class="col-md-4 mb-4">
@@ -13,20 +13,20 @@
             </div>
             <div class="card-footer">
                 {% if exhibition.is_active %}
-                <span class="badge bg-success">Active</span>
+                <span class="badge bg-primary">Planned</span>
                 {% else %}
-                <span class="badge bg-secondary">Ended</span>
+                <span class="badge bg-secondary">Closed</span>
                 {% endif %}
             </div>
         </div>
     </div>
     {% empty %}
-    <p>No current exhibitions.</p>
+    <p>No exhibitions.</p>
     {% endfor %}
 </div>
 <div class="alert alert-info mt-4">
-    <strong>Page generated:</strong><br>
-    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
-    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+    <strong>Current Time:</strong><br>
+    Server: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Minsk: {{ current_time_local|date:"d/m/Y H:i:s" }}
 </div>
 {% endblock %}

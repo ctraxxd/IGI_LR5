@@ -95,19 +95,19 @@ class Exhibit(models.Model):
     year_created = models.IntegerField(null=True, blank=True)  # Year the exhibit was created
     author = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
-    photo = models.ImageField(upload_to='exhibits/', null=True, blank=True)
+    photo_url = models.URLField(max_length=500, null=True, blank=True, help_text='External image URL')
     hall = models.ForeignKey(Hall, on_delete=models.SET_NULL, null=True, related_name='exhibits')
     assigned_employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_exhibits')
     is_displayed = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         ordering = ['name']
-    
+
     def __str__(self):
         return self.name
-    
+
     def clean(self):
         if self.year_created and self.year_created <= 0:
             raise ValidationError('Year must be positive')
