@@ -109,9 +109,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
+
+# Timezone: Use server's timezone from environment, default to Europe/Minsk
+TIME_ZONE = os.getenv('TIME_ZONE', 'Europe/Minsk')
+USE_TZ = True  # Store in UTC, convert at display
 
 # Static files
 STATIC_URL = 'static/'

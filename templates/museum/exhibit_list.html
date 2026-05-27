@@ -44,6 +44,9 @@
     {% for exhibit in page_obj %}
     <div class="col-md-4 mb-4">
         <div class="card h-100">
+            {% if exhibit.photo %}
+            <img src="{{ exhibit.photo }}" class="card-img-top" alt="{{ exhibit.name }}" style="height: 200px; object-fit: cover;">
+            {% endif %}
             <div class="card-body">
                 <h5 class="card-title">{{ exhibit.name }}</h5>
                 <p class="card-text">{{ exhibit.description|truncatewords:15 }}</p>

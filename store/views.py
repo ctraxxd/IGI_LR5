@@ -1,7 +1,5 @@
 import logging
 import json
-import asyncio
-import aiohttp
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
@@ -544,86 +542,3 @@ def calendar(request):
         'current_time_local': timezone.localtime(),
     }
     return render(request, 'museum/calendar.html', context)
-
-
-# Async Demo view (Bonus task)
-async def async_demo(request):
-    """
-    Demonstrates async/await and multiprocessing concepts.
-    Fetches data from multiple museum APIs in parallel.
-    """
-    results = {
-        'api_results': [],
-        'execution_time': 0,
-        'artworks': []
-    }
-    
-    import time
-    start_time = time.time()
-    
-    # Define museum API endpoints
-    api_endpoints = [
-        {
-            'name': 'Art Institute of Chicago',
-            'url': 'https://api.artic.edu/api/v1/artworks?limit=5'
-        },
-        {
-            'name': 'Metropolitan Museum of Art',
-            'url': 'https://collectionapi.metmuseum.org/public/collection/v1/objects?hasImages=true'
-        },
-        {
-            'name': 'Rijksmuseum',
-            'url': 'https://www.rijksmuseum.nl/api/en/collection?key=glFhU2SO175nZvO7qJ0ZqX8sL1J3L5N8&type=schilderij'
-        }
-    ]
-    
-    # Async fetch from all APIs in parallel
-    async with aiohttp.ClientSession() as session:
-        async def fetch_api(session, endpoint):
-            try:
-                async with session.get(endpoint['url'], timeout=aiohttp.ClientTimeout(total=5)) as response:
-                    data = await response.json()
-                    return {
-                        'name': endpoint['name'],
-                        'status': response.status,
-                        'success': response.status == 200,
-                        'data_sample': str(data)[:200] if data else 'No data'
-                    }
-            except Exception as e:
-                return {
-                    'name': endpoint['name'],
-                    'status': 'error',
-                    'success': False,
-                    'error': str(e)
-                }
-        
-        tasks = [fetch_api(session, endpoint) for endpoint in api_endpoints]
-        results['api_results'] = await asyncio.gather(*tasks)
-    
-    # Simulate async task with asyncio.sleep
-    async def simulate_task(name, delay):
-        await asyncio.sleep(delay)
-        return f'{name} completed in {delay}s'
-    
-    # Run multiple tasks concurrently
-    concurrent_tasks = [
-        simulate_task('Task A', 0.5),
-        simulate_task('Task B', 0.3),
-        simulate_task('Task C', 0.4),
-    ]
-    task_results = await asyncio.gather(*concurrent_tasks)
-    results['task_results'] = task_results
-    
-    results['execution_time'] = round(time.time() - start_time, 3)
-    
-    # Get some local artworks for display
-    results['artworks'] = list(Exhibit.objects.filter(is_displayed=True)[:6].values(
-        'id', 'name', 'author', 'year_created'
-    ))
-    
-    context = {
-        'results': results,
-        'current_time_utc': timezone.now(),
-        'current_time_local': timezone.localtime(),
-    }
-    return render(request, 'museum/async_demo.html', context)

@@ -108,24 +108,24 @@ class Command(BaseCommand):
             employees[last] = emp
         self.stdout.write(f'Created {len(employees)} employees')
 
-        # Create exhibits
+        # Create exhibits with placeholder images
         exhibits_data = [
-            ('Mona Lisa Replica', 'Painting', '2023-01-15', 1503, 'Leonardo da Vinci', 'Famous portrait', 1, 'Ivanov'),
-            ('The Scream Copy', 'Painting', '2023-02-20', 1893, 'Edvard Munch', 'Expressionist masterpiece', 2, 'Petrova'),
-            ('David Sculpture', 'Sculpture', '2023-03-10', 1504, 'Michelangelo', 'Renaissance sculpture', 5, 'Morozova'),
-            ('Sunflowers', 'Painting', '2023-04-05', 1888, 'Vincent van Gogh', 'Post-impressionist work', 2, 'Petrova'),
-            ('The Kiss', 'Painting', '2023-05-12', 1908, 'Gustav Klimt', 'Art Nouveau painting', 4, 'Lebedeva'),
-            ('Thinker', 'Sculpture', '2023-06-18', 1902, 'Auguste Rodin', 'Bronze sculpture', 5, 'Morozova'),
-            ('Girl with a Pearl Earring', 'Painting', '2023-07-22', 1665, 'Johannes Vermeer', 'Dutch Golden Age', 1, 'Ivanov'),
-            ('Starry Night', 'Painting', '2023-08-30', 1889, 'Vincent van Gogh', 'Night landscape', 2, 'Petrova'),
-            ('Asian Dragon', 'Sculpture', '2023-09-14', 1750, 'Unknown Master', 'Chinese bronze dragon', 3, 'Kozlova'),
-            ('Modern Abstract', 'Modern Art', '2023-10-25', 2020, 'Contemporary Artist', 'Abstract composition', 4, 'Lebedeva'),
-            ('Cherry Blossom', 'Photography', '2023-11-08', 2022, 'Japanese Photographer', 'Spring in Kyoto', 3, 'Kozlova'),
-            ('Geometric Dreams', 'Graphics', '2023-12-01', 2021, 'Digital Artist', 'Digital art piece', 4, 'Lebedeva'),
+            ('Mona Lisa Replica', 'Painting', '2026-01-15', 1503, 'Leonardo da Vinci', 'Famous portrait', 1, 'Ivanov', 'https://picsum.photos/seed/monalisa/400/300'),
+            ('The Scream Copy', 'Painting', '2026-02-20', 1893, 'Edvard Munch', 'Expressionist masterpiece', 2, 'Petrova', 'https://picsum.photos/seed/scream/400/300'),
+            ('David Sculpture', 'Sculpture', '2026-03-10', 1504, 'Michelangelo', 'Renaissance sculpture', 5, 'Morozova', 'https://picsum.photos/seed/david/400/300'),
+            ('Sunflowers', 'Painting', '2026-04-05', 1888, 'Vincent van Gogh', 'Post-impressionist work', 2, 'Petrova', 'https://picsum.photos/seed/sunflowers/400/300'),
+            ('The Kiss', 'Painting', '2026-05-12', 1908, 'Gustav Klimt', 'Art Nouveau painting', 4, 'Lebedeva', 'https://picsum.photos/seed/kiss/400/300'),
+            ('Thinker', 'Sculpture', '2026-06-18', 1902, 'Auguste Rodin', 'Bronze sculpture', 5, 'Morozova', 'https://picsum.photos/seed/thinker/400/300'),
+            ('Girl with a Pearl Earring', 'Painting', '2026-07-22', 1665, 'Johannes Vermeer', 'Dutch Golden Age', 1, 'Ivanov', 'https://picsum.photos/seed/girl/400/300'),
+            ('Starry Night', 'Painting', '2026-08-30', 1889, 'Vincent van Gogh', 'Night landscape', 2, 'Petrova', 'https://picsum.photos/seed/starry/400/300'),
+            ('Asian Dragon', 'Sculpture', '2026-09-14', 1750, 'Unknown Master', 'Chinese bronze dragon', 3, 'Kozlova', 'https://picsum.photos/seed/dragon/400/300'),
+            ('Modern Abstract', 'Modern Art', '2026-10-25', 2020, 'Contemporary Artist', 'Abstract composition', 4, 'Lebedeva', 'https://picsum.photos/seed/abstract/400/300'),
+            ('Cherry Blossom', 'Photography', '2026-11-08', 2022, 'Japanese Photographer', 'Spring in Kyoto', 3, 'Kozlova', 'https://picsum.photos/seed/sakura/400/300'),
+            ('Geometric Dreams', 'Graphics', '2026-12-01', 2021, 'Digital Artist', 'Digital art piece', 4, 'Lebedeva', 'https://picsum.photos/seed/geometry/400/300'),
         ]
         exhibits = {}
-        for name, art_type, acq_date, year, author, desc, hall_num, emp_last in exhibits_data:
-            exhibit, _ = Exhibit.objects.get_or_create(
+        for name, art_type, acq_date, year, author, desc, hall_num, emp_last, photo_url in exhibits_data:
+            exhibit, created = Exhibit.objects.get_or_create(
                 name=name,
                 defaults={
                     'art_type': art_types[art_type],
@@ -138,6 +138,10 @@ class Command(BaseCommand):
                     'is_displayed': True,
                 }
             )
+            # Update photo if exhibit was just created
+            if created and photo_url:
+                exhibit.photo = photo_url
+                exhibit.save()
             exhibits[name] = exhibit
         self.stdout.write(f'Created {len(exhibits)} exhibits')
 
@@ -159,39 +163,45 @@ class Command(BaseCommand):
                 exp.exhibits.add(exhibits.get(en))
         self.stdout.write('Created expositions')
 
-        # Create exhibitions (temporary)
+        # Create exhibitions (temporary) - some closed, some active
         exhibitions_data = [
-            ('Winter Wonderland', 'Winter-themed art', '2024-12-01', '2025-02-28', ['Starry Night', 'Cherry Blossom']),
-            ('Spring Renewal', 'Spring collection', '2025-03-01', '2025-05-31', ['Sunflowers', 'Cherry Blossom', 'Geometric Dreams']),
+            ('Winter Wonderland 2026', 'Winter-themed art', '2026-01-01', '2026-02-28', ['Starry Night', 'Cherry Blossom'], False),
+            ('Spring Renewal 2026', 'Spring collection', '2026-03-01', '2026-05-31', ['Sunflowers', 'Cherry Blossom', 'Geometric Dreams'], False),
+            ('Summer Impressions 2026', 'Summer art collection', '2026-06-01', '2026-08-31', ['Mona Lisa Replica', 'The Kiss', 'Girl with a Pearl Earring'], True),
+            ('Autumn Classics 2026', 'Classical masterpieces', '2026-09-01', '2026-11-30', ['David Sculpture', 'Thinker', 'Asian Dragon'], True),
+            ('New Year Exhibition 2027', 'New Year special', '2026-12-15', '2027-01-15', ['Modern Abstract', 'Geometric Dreams'], True),
         ]
-        for name, desc, start, end, exhibit_names in exhibitions_data:
-            exh, _ = Exhibition.objects.get_or_create(
+        for name, desc, start, end, exhibit_names, is_active in exhibitions_data:
+            exh, created = Exhibition.objects.get_or_create(
                 name=name,
                 defaults={
                     'description': desc,
                     'start_date': start,
                     'end_date': end,
-                    'is_active': True,
+                    'is_active': is_active,
                 }
             )
             for en in exhibit_names:
                 exh.exhibits.add(exhibits.get(en))
-        self.stdout.write('Created exhibitions')
+        self.stdout.write('Created 5 exhibitions (2 closed, 3 active)')
 
-        # Create tours
+        # Create tours for 2026-2027
         tours_data = [
-            ('TOUR-001', 'Classic Museum Tour', 'Overview of main exhibits', '2025-01-15 10:00:00', 15, 'spring', 'Sidorov', 25.00),
-            ('TOUR-002', 'Renaissance Journey', 'Deep dive into Renaissance art', '2025-02-20 14:00:00', 10, 'spring', 'Petrova', 35.00),
-            ('TOUR-003', 'Modern Art Experience', 'Contemporary artworks tour', '2025-06-10 11:00:00', 12, 'summer', 'Lebedeva', 30.00),
-            ('TOUR-004', 'Sculpture Walk', '3D art through the ages', '2025-07-15 15:00:00', 8, 'summer', 'Kozlova', 28.00),
-            ('TOUR-005', 'Asian Art Discovery', 'Explore Asian masterpieces', '2025-09-05 10:00:00', 10, 'autumn', 'Sidorov', 32.00),
-            ('TOUR-006', 'Evening at the Museum', 'Special evening tour', '2025-10-20 18:00:00', 20, 'autumn', 'Pavlova', 40.00),
-            ('TOUR-007', 'Winter Tales', 'Winter-themed exhibits', '2025-12-15 12:00:00', 15, 'winter', 'Kozlova', 30.00),
-            ('TOUR-008', 'Holiday Special', 'Festive season tour', '2025-12-25 14:00:00', 25, 'winter', 'Sidorov', 45.00),
+            ('TOUR-001', 'Classic Museum Tour', 'Overview of main exhibits', '2026-01-20 10:00:00', 15, 'winter', 'Sidorov', 25.00),
+            ('TOUR-002', 'Renaissance Journey', 'Deep dive into Renaissance art', '2026-02-25 14:00:00', 10, 'winter', 'Petrova', 35.00),
+            ('TOUR-003', 'Spring Art Walk', 'Spring collection highlights', '2026-03-15 11:00:00', 12, 'spring', 'Lebedeva', 30.00),
+            ('TOUR-004', 'Sculpture Garden Tour', '3D art through the ages', '2026-04-18 15:00:00', 8, 'spring', 'Kozlova', 28.00),
+            ('TOUR-005', 'Summer Impressions', 'Summer exhibition tour', '2026-06-10 10:00:00', 15, 'summer', 'Sidorov', 32.00),
+            ('TOUR-006', 'Evening at the Museum', 'Special evening tour', '2026-07-20 18:00:00', 20, 'summer', 'Pavlova', 40.00),
+            ('TOUR-007', 'Autumn Classics', 'Classical masterpieces', '2026-09-15 12:00:00', 15, 'autumn', 'Kozlova', 30.00),
+            ('TOUR-008', 'Modern Art Discovery', 'Contemporary artworks', '2026-10-25 14:00:00', 18, 'autumn', 'Petrova', 38.00),
+            ('TOUR-009', 'Winter Wonderland', 'Winter-themed exhibits', '2026-12-10 11:00:00', 20, 'winter', 'Sidorov', 35.00),
+            ('TOUR-010', 'New Year Special', 'Festive season tour', '2026-12-28 15:00:00', 25, 'winter', 'Pavlova', 45.00),
+            ('TOUR-011', 'Early 2027 Art Tour', 'New year collection', '2027-01-15 10:00:00', 15, 'winter', 'Lebedeva', 30.00),
         ]
         tours = {}
         for code, name, desc, tour_date, size, season, guide_last, price in tours_data:
-            tour, _ = Tour.objects.get_or_create(
+            tour, created = Tour.objects.get_or_create(
                 code=code,
                 defaults={
                     'name': name,
@@ -267,13 +277,13 @@ class Command(BaseCommand):
             )
         self.stdout.write('Created 10 tickets')
 
-        # Create promo codes
+        # Create promo codes for 2026-2027
         promo_codes_data = [
-            ('WELCOME10', 'Welcome discount for new visitors', 10.00, 20.00, True, '2025-01-01 00:00:00', '2025-12-31 23:59:59'),
-            ('SUMMER2025', 'Summer special offer', 15.00, 30.00, True, '2025-06-01 00:00:00', '2025-08-31 23:59:59'),
-            ('STUDENT20', 'Student discount', 20.00, 25.00, True, '2025-01-01 00:00:00', '2025-12-31 23:59:59'),
-            ('FAMILY', 'Family package discount', 25.00, 50.00, True, '2025-01-01 00:00:00', '2025-12-31 23:59:59'),
-            ('EARLYBIRD', 'Early booking discount', 10.00, 0.00, True, '2025-01-01 00:00:00', '2025-06-30 23:59:59'),
+            ('WELCOME10', 'Welcome discount for new visitors', 10.00, 20.00, True, '2026-01-01 00:00:00', '2027-12-31 23:59:59'),
+            ('SUMMER2026', 'Summer special offer', 15.00, 30.00, True, '2026-06-01 00:00:00', '2026-08-31 23:59:59'),
+            ('STUDENT20', 'Student discount', 20.00, 25.00, True, '2026-01-01 00:00:00', '2027-12-31 23:59:59'),
+            ('FAMILY', 'Family package discount', 25.00, 50.00, True, '2026-01-01 00:00:00', '2027-12-31 23:59:59'),
+            ('NEWYEAR2027', 'New Year special discount', 20.00, 40.00, True, '2026-12-01 00:00:00', '2027-01-31 23:59:59'),
         ]
         for code, desc, discount, min_purch, active, valid_from, valid_until in promo_codes_data:
             PromoCode.objects.get_or_create(
@@ -291,11 +301,11 @@ class Command(BaseCommand):
 
         # Create reviews
         reviews_data = [
-            ('Smirnov', 5, 'Excellent museum! Very impressed with the collection.', '2025-01-10'),
-            ('Kuznetsova', 4, 'Great experience, especially the Renaissance hall.', '2025-01-12'),
-            ('Popov', 5, 'Amazing guides and beautiful exhibits!', '2025-01-15'),
-            ('Vasilieva', 4, 'Well organized tours, friendly staff.', '2025-01-18'),
-            ('Mikhailov', 5, 'Best museum in the city. Highly recommend!', '2025-01-20'),
+            ('Smirnov', 5, 'Excellent museum! Very impressed with the collection.', '2026-01-10'),
+            ('Kuznetsova', 4, 'Great experience, especially the Renaissance hall.', '2026-02-12'),
+            ('Popov', 5, 'Amazing guides and beautiful exhibits!', '2026-03-15'),
+            ('Vasilieva', 4, 'Well organized tours, friendly staff.', '2026-04-18'),
+            ('Mikhailov', 5, 'Best museum in the city. Highly recommend!', '2026-05-20'),
         ]
         for last, rating, text, visit_date in reviews_data:
             Review.objects.get_or_create(
@@ -337,13 +347,16 @@ class Command(BaseCommand):
             (2015, 'New modern art wing inaugurated'),
             (2020, 'Virtual tours introduced during pandemic'),
             (2024, 'Major Renaissance exhibition hosted'),
+            (2026, 'New contemporary art gallery opened'),
+            (2026, 'Digital ticketing system launched'),
+            (2027, 'International art exchange program started'),
         ]
         for year, event in history_data:
             CompanyHistory.objects.get_or_create(
                 year=year,
                 defaults={'event': event}
             )
-        self.stdout.write('Created 8 company history events')
+        self.stdout.write('Created 11 company history events')
 
         # Create company info
         if not CompanyInfo.objects.exists():

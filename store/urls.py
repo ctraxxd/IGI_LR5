@@ -48,9 +48,6 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('profile/', views.profile, name='profile'),
-    
-    # Async Demo (Bonus)
-    path('async-demo/', views.async_demo, name='async_demo'),
 ]
 
 if settings.DEBUG:

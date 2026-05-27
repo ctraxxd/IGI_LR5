@@ -212,11 +212,6 @@ Public images available on Docker Hub (configure in docker-compose.yml)
 - [x] GitHub repository (private)
 - [x] Render.com deployment
 
-### Bonus Tasks
-- [x] Async/await demonstration page (`/async-demo/`)
-- [x] Parallel API calls with aiohttp
-- [x] Multiprocessing concepts
-
 ---
 
 ## 🔐 Default Credentials
@@ -282,7 +277,6 @@ LR5/
 | Tickets | `/tickets/` | Ticket purchase and history |
 | Statistics | `/statistics/` | Dashboard with charts (staff only) |
 | Calendar | `/calendar/` | Text calendar view |
-| Async Demo | `/async-demo/` | Async/await demonstration |
 | Admin | `/admin/` | Django admin panel |
 
 ---

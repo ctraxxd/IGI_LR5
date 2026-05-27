@@ -126,7 +126,7 @@ Visit:
 - **Homepage:** `https://museum-lr5.onrender.com`
 - **Admin:** `https://museum-lr5.onrender.com/admin`
 - **Statistics:** `https://museum-lr5.onrender.com/statistics`
-- **Async Demo:** `https://museum-lr5.onrender.com/async-demo`
+- **Calendar:** `https://museum-lr5.onrender.com/calendar`
 
 ---
 
@@ -193,7 +193,7 @@ Before submitting:
 - [ ] Admin credentials work
 - [ ] All pages load without errors
 - [ ] Statistics page shows graphs
-- [ ] Async demo page works
+- [ ] Calendar page works
 - [ ] Tests pass with 80%+ coverage
 
 ---
