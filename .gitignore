@@ -126,8 +126,24 @@ dmypy.json
 .DS_Store
 Thumbs.db
 
+# Nessy CLI
+.nessy/
+NESSY.md
+AGENTS.md
+
 # Static files (collectstatic)
 staticfiles/
 
 # Media files
 media/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

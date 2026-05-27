@@ -9,9 +9,8 @@ This guide walks you through deploying the Museum project to Render.com.
 Before deploying, ensure:
 
 - [ ] All tests pass: `pytest --cov=store`
-- [ ] Database is populated: `python manage.py populate_data`
+- [ ] Database is populated: `python manage.py seed_data`
 - [ ] Superuser exists: `python manage.py createsuperuser`
-- [ ] `.env` file is configured (see below)
 - [ ] Code is committed to Git
 
 ---
@@ -21,7 +20,7 @@ Before deploying, ensure:
 ### 1.1 Initialize Git (if not already done)
 
 ```bash
-cd /Users/v.v.efremenko/Documents/bsuir/igi/LR5
+cd /path/to/your/project
 git init
 git add .
 git commit -m "Museum project - Variant 9"
@@ -41,14 +40,6 @@ git branch -M main
 git remote add origin https://github.com/YOUR_USERNAME/museum-lr5.git
 git push -u origin main
 ```
-
-### 1.4 Add Instructor as Collaborator
-
-1. Go to your repository on GitHub
-2. Click **Settings** → **Collaborators**
-3. Click **Add people**
-4. Search for `@AnnBsuir` and add
-5. They will receive an invitation email
 
 ---
 
@@ -73,7 +64,7 @@ git push -u origin main
 | **Branch** | `main` |
 | **Root Directory** | (leave blank) |
 | **Runtime** | `Python 3` |
-| **Build Command** | `pip install -r requirements.txt` |
+| **Build Command** | `pip install -r requirements.txt && python manage.py collectstatic --noinput` |
 | **Start Command** | `gunicorn config.wsgi:application` |
 
 ### 2.3 Configure Environment Variables
@@ -85,7 +76,7 @@ Click **Advanced** → **Add Environment Variable**:
 | `SECRET_KEY` | Generate random: `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'` |
 | `DEBUG` | `False` |
 | `DATABASE_URL` | (auto-filled by Render) |
-| `ALLOWED_HOSTS` | `*` (or your domain) |
+| `ALLOWED_HOSTS` | `*` |
 
 ### 2.4 Database Configuration
 
@@ -126,7 +117,7 @@ python manage.py createsuperuser
 ### 3.3 Populate Sample Data
 
 ```bash
-python manage.py populate_data
+python manage.py seed_data
 ```
 
 ### 3.4 Verify Deployment
@@ -197,10 +188,9 @@ Then redeploy.
 Before submitting:
 
 - [ ] GitHub repository is **Private**
-- [ ] @AnnBsuir added as collaborator
 - [ ] Project deployed on Render.com
 - [ ] Working URL submitted
-- [ ] Admin credentials work (admin/admin123 or your superuser)
+- [ ] Admin credentials work
 - [ ] All pages load without errors
 - [ ] Statistics page shows graphs
 - [ ] Async demo page works

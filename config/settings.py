@@ -4,17 +4,26 @@ Django settings for config project.
 
 from pathlib import Path
 import os
+import sys
 from dotenv import load_dotenv
 
+# Load environment variables
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Security settings
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-j-s*m_6=n807gt4dn^t%q!n4**mr-3*d@$d(c_$hfbgseq-9ra')
 
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+# DEBUG: Default to False in production
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# ALLOWED_HOSTS: Default to wildcard for Render
+allowed_hosts = os.getenv('ALLOWED_HOSTS', '')
+if allowed_hosts:
+    ALLOWED_HOSTS = [h.strip() for h in allowed_hosts.split(',')]
+else:
+    ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -65,20 +74,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# PostgreSQL for production
-if os.getenv('DATABASE_URL'):
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
     import dj_database_url
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600,
-        default=os.getenv('DATABASE_URL')
-    )
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            default=DATABASE_URL
+        )
+    }
+    # Log database configuration for debugging
+    print(f"Using PostgreSQL database: {DATABASES['default']['ENGINE']}")
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    print("Using SQLite database")
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -158,3 +172,9 @@ LOGGING = {
 
 # Create logs directory
 os.makedirs(BASE_DIR / 'logs', exist_ok=True)
+
+# CSRF trusted origins for Render
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://igi-lr5-26zi.onrender.com',
+]

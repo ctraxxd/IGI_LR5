@@ -289,9 +289,7 @@ LR5/
 
 ## 📞 Support
 
-For questions or issues related to this lab work, contact:
-- GitHub: @AnnBsuir
-- Email: anzh52889@gmail.com
+For questions or issues related to this lab work, contact your instructor.
 
 ---
 
