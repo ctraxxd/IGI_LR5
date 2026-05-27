@@ -1,5 +1,8 @@
 FROM python:3.9-slim
 
+# Force rebuild - change this timestamp to invalidate cache
+LABEL rebuild="2026-05-27-migrations-fix"
+
 WORKDIR /app
 
 # Install system dependencies
@@ -18,8 +21,8 @@ COPY . .
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Run database migrations
-RUN python manage.py migrate --noinput
+# ALWAYS run migrations (don't cache this step)
+RUN python manage.py migrate --noinput 2>&1 | tee /tmp/migrate.log && cat /tmp/migrate.log
 
 # Create logs directory
 RUN mkdir -p logs
