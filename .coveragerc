@@ -1,0 +1,4 @@
+[run]
+omit = 
+    */management/commands/populate_data.py
+    */migrations/*

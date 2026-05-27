@@ -1,0 +1,34 @@
+{% extends 'museum/base.html' %}
+{% block title %}Halls - Museum{% endblock %}
+{% block content %}
+<h1>Museum Halls</h1>
+<div class="row mt-4">
+    {% for hall in halls %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5>Hall {{ hall.number }}</h5>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ hall.name }}</h5>
+                <p><strong>Floor:</strong> {{ hall.floor }}</p>
+                <p><strong>Area:</strong> {{ hall.area }} m²</p>
+                <p><strong>Exhibits:</strong> {{ hall.exhibit_count }}</p>
+                <p><strong>Employees:</strong> {{ hall.employee_count }}</p>
+                <p>
+                    {% if hall.has_water_feature %}<span class="badge bg-info">Water Feature</span>{% endif %}
+                    {% if hall.has_heating %}<span class="badge bg-warning">Heating</span>{% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No halls available.</p>
+    {% endfor %}
+</div>
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

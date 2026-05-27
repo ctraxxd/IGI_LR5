@@ -1,0 +1,28 @@
+{% extends 'museum/base.html' %}
+{% block title %}Art Types - Museum{% endblock %}
+{% block content %}
+<h1>Art Types & FAQ</h1>
+<div class="accordion mt-4" id="faqAccordion">
+    {% for art_type in art_types %}
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ art_type.id }}">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ art_type.id }}">
+                {{ art_type.name }} ({{ art_type.exhibit_count }} exhibits)
+            </button>
+        </h2>
+        <div id="collapse{{ art_type.id }}" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                {{ art_type.description|default:"No description available." }}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No art types available.</p>
+    {% endfor %}
+</div>
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

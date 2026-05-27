@@ -1,0 +1,34 @@
+{% extends 'museum/base.html' %}
+{% block title %}Calendar{% endblock %}
+{% block content %}
+<h1>Calendar</h1>
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">{{ current_month }}</div>
+            <div class="card-body">
+                <pre class="bg-light p-3">{{ calendar_text }}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Current Date & Time</div>
+            <div class="card-body">
+                <p><strong>UTC:</strong> {{ current_time_utc|date:"d/m/Y H:i:s" }}</p>
+                <p><strong>Local (Minsk):</strong> {{ current_time_local|date:"d/m/Y H:i:s" }}</p>
+                <hr>
+                <p><strong>Day:</strong> {{ current_time_local|date:"l" }}</p>
+                <p><strong>Month:</strong> {{ current_time_local|date:"F" }}</p>
+                <p><strong>Year:</strong> {{ current_time_local|date:"Y" }}</p>
+                <p><strong>Week Number:</strong> {{ current_time_local|date:"W" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <p>The calendar above shows the current month. All dates are displayed in text format.</p>
+    <p><strong>Format:</strong> DD/MM/YYYY</p>
+</div>
+{% endblock %}

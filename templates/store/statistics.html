@@ -1,0 +1,146 @@
+{% extends 'store/base.html' %}
+{% block title %}Statistics{% endblock %}
+{% block content %}
+<h1>Statistics Dashboard</h1>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Total Products</h5>
+                <h2>{{ total_products }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Total Orders</h5>
+                <h2>{{ total_orders }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Total Clients</h5>
+                <h2>{{ total_clients }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Total Revenue</h5>
+                <h2>${{ total_revenue|floatformat:2 }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Products by Category</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>Category</th><th>Products</th><th>Revenue</th></tr></thead>
+                    <tbody>
+                        {% for cat in products_by_category %}
+                        <tr>
+                            <td>{{ cat.name }}</td>
+                            <td>{{ cat.product_count }}</td>
+                            <td>${{ cat.total_revenue|default:0|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Sales by Month (Last 12)</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>Month</th><th>Orders</th><th>Sales</th></tr></thead>
+                    <tbody>
+                        {% for month in sales_by_month %}
+                        <tr>
+                            <td>{{ month.year }}-{{ month.month|stringformat:"02d" }}</td>
+                            <td>{{ month.order_count }}</td>
+                            <td>${{ month.total_sales|default:0|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Top Products</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>Product</th><th>Times Ordered</th></tr></thead>
+                    <tbody>
+                        {% for product in top_products %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.times_ordered }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Clients by City</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>City</th><th>Clients</th></tr></thead>
+                    <tbody>
+                        {% for city in clients_by_city %}
+                        <tr>
+                            <td>{{ city.city }}</td>
+                            <td>{{ city.client_count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <strong>Statistics generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}<br>
+    <strong>Average Order Value:</strong> ${{ avg_order_value|floatformat:2 }}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Simple chart for products by category
+const ctx = document.getElementById('categoryChart');
+if (ctx) {
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for cat in products_by_category %}'{{ cat.name }}',{% endfor %}],
+            datasets: [{
+                label: 'Products',
+                data: [{% for cat in products_by_category %}{{ cat.product_count }},{% endfor %}],
+                backgroundColor: 'rgba(54, 162, 235, 0.5)'
+            }]
+        }
+    });
+}
+</script>
+{% endblock %}

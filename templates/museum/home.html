@@ -1,0 +1,58 @@
+{% extends 'museum/base.html' %}
+{% block title %}Home - Museum{% endblock %}
+{% block content %}
+<div class="jumbotron p-5 bg-light rounded">
+    <h1 class="display-4">Welcome to Our Museum</h1>
+    <p class="lead">Discover art, history, and culture through our amazing exhibits.</p>
+    <hr class="my-4">
+    <a class="btn btn-primary btn-lg" href="{% url 'exhibit_list' %}" role="button">Browse Exhibits</a>
+    <a class="btn btn-success btn-lg" href="{% url 'tour_list' %}" role="button">Book a Tour</a>
+</div>
+
+{% if latest_exhibit %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h4>Featured Exhibit</h4>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ latest_exhibit.name }}</h5>
+        <p class="card-text">{{ latest_exhibit.description|truncatewords:30 }}</p>
+        <p><strong>Art Type:</strong> {{ latest_exhibit.art_type.name }}</p>
+        <p><strong>Hall:</strong> {{ latest_exhibit.hall.name }}</p>
+        <p><strong>Acquired:</strong> {{ latest_exhibit.acquisition_date|date:"d/m/Y" }}</p>
+        <a href="{% url 'exhibit_detail' pk=latest_exhibit.pk %}" class="btn btn-outline-primary">Learn More</a>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Currency Rates (USD)</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for currency, rate in currency_rates.items %}
+                    {% if currency in "BYN EUR RUB" %}
+                    <li>{{ currency }}: {{ rate }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Art Fact of the Day</div>
+            <div class="card-body">
+                <p class="card-text">{{ art_fact }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <strong>Current Time:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

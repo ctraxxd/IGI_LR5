@@ -1,0 +1,74 @@
+{% extends 'museum/base.html' %}
+{% block title %}Tours - Museum{% endblock %}
+{% block content %}
+<h1>Museum Tours</h1>
+
+<form method="get" class="row g-3 mt-2">
+    <div class="col-md-3">
+        <select name="season" class="form-select">
+            <option value="">All Seasons</option>
+            {% for value, label in seasons %}
+            <option value="{{ value }}" {% if value == request.GET.season %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <input type="date" name="date_from" class="form-control" value="{{ request.GET.date_from }}">
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="{% url 'tour_list' %}" class="btn btn-secondary">Reset</a>
+    </div>
+</form>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Season</th>
+            <th>Group Size</th>
+            <th>Guide</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tour in page_obj %}
+        <tr>
+            <td>{{ tour.code }}</td>
+            <td>{{ tour.name }}</td>
+            <td>{{ tour.date|date:"d/m/Y H:i" }}</td>
+            <td>{{ tour.get_season_display }}</td>
+            <td>{{ tour.group_size }}</td>
+            <td>{{ tour.guide|default:"TBA" }}</td>
+            <td>${{ tour.price }}</td>
+            <td><a href="{% url 'tour_detail' pk=tour.pk %}" class="btn btn-sm btn-primary">View</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8">No tours found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

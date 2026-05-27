@@ -1,0 +1,17 @@
+{% extends 'store/base.html' %}
+{% block title %}Vacancies{% endblock %}
+{% block content %}
+<h1>Career Opportunities</h1>
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Join Our Team!</h5>
+        <p class="card-text">We are always looking for talented individuals to join our growing team.</p>
+        <p>Current openings will be posted here soon.</p>
+    </div>
+</div>
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

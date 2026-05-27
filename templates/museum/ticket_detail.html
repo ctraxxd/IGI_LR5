@@ -1,0 +1,25 @@
+{% extends 'museum/base.html' %}
+{% block title %}Ticket #{{ ticket.id }}{% endblock %}
+{% block content %}
+<h1>Ticket #{{ ticket.id }}</h1>
+<div class="card mt-4">
+    <div class="card-body">
+        <table class="table">
+            <tr><th>Client</th><td>{{ ticket.client }}</td></tr>
+            <tr><th>Tour</th><td>{{ ticket.tour|default:"General Admission" }}</td></tr>
+            <tr><th>Purchase Date</th><td>{{ ticket.purchase_date|date:"d/m/Y H:i:s" }}</td></tr>
+            <tr><th>Visit Date</th><td>{{ ticket.visit_date|date:"d/m/Y" }}</td></tr>
+            <tr><th>Ticket Type</th><td>{{ ticket.get_ticket_type_display }}</td></tr>
+            <tr><th>Base Price</th><td>${{ ticket.base_price }}</td></tr>
+            <tr><th>Discount</th><td>{{ ticket.discount }}%</td></tr>
+            <tr><th>Promo Code</th><td>{{ ticket.promo_code|default:"None" }}</td></tr>
+            <tr><th>Final Price</th><td><strong>${{ ticket.final_amount }}</strong></td></tr>
+        </table>
+    </div>
+</div>
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

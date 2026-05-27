@@ -1,0 +1,89 @@
+{% extends 'museum/base.html' %}
+{% block title %}About - Museum{% endblock %}
+{% block content %}
+<h1>About Our Museum</h1>
+
+{% if company_info %}
+<div class="row mt-4">
+    <div class="col-md-6">
+        {% if company_info.logo %}
+        <img src="{{ company_info.logo.url }}" alt="{{ company_info.name }} Logo" class="img-fluid mb-3">
+        {% endif %}
+        <h3>{{ company_info.name }}</h3>
+        <p class="lead">{{ company_info.description }}</p>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Contact Information</h5>
+                <p class="card-text">
+                    <strong>Address:</strong> {{ company_info.address }}<br>
+                    <strong>Email:</strong> {{ company_info.email }}<br>
+                    <strong>Phone:</strong> {{ company_info.phone }}
+                </p>
+                {% if company_info.video_url %}
+                <div class="mt-3">
+                    <a href="{{ company_info.video_url }}" class="btn btn-primary" target="_blank">Watch Our Video</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if history %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Our History</h5>
+    </div>
+    <div class="card-body">
+        <div class="timeline">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Event</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history %}
+                    <tr>
+                        <td><strong>{{ item.year }}</strong></td>
+                        <td>{{ item.event }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Our Mission</h5>
+        <p class="card-text">To collect, preserve, and exhibit works of art and historical artifacts.</p>
+        <h5 class="card-title mt-4">Our History</h5>
+        <p class="card-text">Founded in 1950, our museum has grown to house over 10,000 exhibits.</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Museum Details</h5>
+        <table class="table table-bordered mt-3">
+            <tr><th>Registration Number</th><td>BY-MUSEUM-1950</td></tr>
+            <tr><th>Address</th><td>Minsk, Belarus</td></tr>
+            <tr><th>Opening Hours</th><td>Tue-Sun: 10:00-18:00</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

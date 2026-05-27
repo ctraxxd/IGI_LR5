@@ -1,0 +1,29 @@
+{% extends 'museum/base.html' %}
+{% block title %}Contacts - Museum{% endblock %}
+{% block content %}
+<h1>Our Staff</h1>
+<div class="row mt-4">
+    {% for employee in employees %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">{{ employee.first_name }} {{ employee.last_name }}</h5>
+                <p class="text-muted">{{ employee.position.name }}</p>
+                {% if employee.hall %}
+                <p><small>Hall: {{ employee.hall.name }}</small></p>
+                {% endif %}
+                <p><i class="bi bi-telephone"></i> {{ employee.phone }}</p>
+                <p><i class="bi bi-envelope"></i> {{ employee.email }}</p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No employees listed.</p>
+    {% endfor %}
+</div>
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

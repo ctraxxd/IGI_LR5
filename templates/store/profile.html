@@ -1,0 +1,26 @@
+{% extends 'store/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<h1>My Profile</h1>
+<form method="post" class="mt-4">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
+</form>
+
+<div class="card mt-4">
+    <div class="card-header">Account Information</div>
+    <div class="card-body">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Member since:</strong> {{ user.date_joined|date:"d/m/Y" }}</p>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

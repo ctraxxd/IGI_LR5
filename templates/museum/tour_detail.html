@@ -1,0 +1,28 @@
+{% extends 'museum/base.html' %}
+{% block title %}Tour {{ tour.code }} - Museum{% endblock %}
+{% block content %}
+<h1>Tour: {{ tour.name }}</h1>
+<div class="card mt-4">
+    <div class="card-body">
+        <table class="table">
+            <tr><th>Code</th><td>{{ tour.code }}</td></tr>
+            <tr><th>Description</th><td>{{ tour.description }}</td></tr>
+            <tr><th>Date</th><td>{{ tour.date|date:"d/m/Y H:i" }}</td></tr>
+            <tr><th>Season</th><td>{{ tour.get_season_display }}</td></tr>
+            <tr><th>Group Size</th><td>{{ tour.group_size }} people</td></tr>
+            <tr><th>Guide</th><td>{{ tour.guide|default:"TBA" }}</td></tr>
+            <tr><th>Price</th><td>${{ tour.price }}</td></tr>
+        </table>
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<a href="{% url 'ticket_create' %}?tour={{ tour.pk }}" class="btn btn-success mt-3">Book Ticket</a>
+{% endif %}
+
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

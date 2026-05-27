@@ -1,0 +1,58 @@
+{% extends 'museum/base.html' %}
+{% block title %}Vacancies{% endblock %}
+{% block content %}
+<h1>Career Opportunities</h1>
+<p class="lead">Join our team of passionate professionals dedicated to preserving and sharing art with the world.</p>
+
+{% if vacancies %}
+<div class="row mt-4">
+    {% for vacancy in vacancies %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">{{ vacancy.title }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text"><strong>Salary:</strong> {{ vacancy.salary_range }}</p>
+                <h6>Description:</h6>
+                <p class="card-text">{{ vacancy.description }}</p>
+                <h6>Requirements:</h6>
+                <p class="card-text">{{ vacancy.requirements }}</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Posted: {{ vacancy.posted_date|date:"d/m/Y" }}</small>
+                {% if vacancy.is_active %}
+                <span class="badge bg-success float-end">Active</span>
+                {% else %}
+                <span class="badge bg-secondary float-end">Closed</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info mt-4">
+    <p class="mb-0">No current vacancies available. Please check back later!</p>
+</div>
+{% endif %}
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Why Work With Us?</h5>
+        <ul class="list-unstyled">
+            <li>✓ Be part of a cultural institution with a rich history</li>
+            <li>✓ Work with world-class art and artifacts</li>
+            <li>✓ Professional development opportunities</li>
+            <li>✓ Collaborative and creative work environment</li>
+            <li>✓ Competitive compensation and benefits</li>
+        </ul>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

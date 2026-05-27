@@ -1,0 +1,55 @@
+{% extends 'museum/base.html' %}
+{% block title %}My Tickets - Museum{% endblock %}
+{% block content %}
+<h1>My Tickets</h1>
+{% if user.is_authenticated %}
+<a href="{% url 'ticket_create' %}" class="btn btn-success mb-3">Purchase Ticket</a>
+{% endif %}
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Ticket #</th>
+            <th>Client</th>
+            <th>Tour</th>
+            <th>Visit Date</th>
+            <th>Type</th>
+            <th>Final Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ticket in page_obj %}
+        <tr>
+            <td>#{{ ticket.id }}</td>
+            <td>{{ ticket.client }}</td>
+            <td>{{ ticket.tour|default:"General Admission" }}</td>
+            <td>{{ ticket.visit_date|date:"d/m/Y" }}</td>
+            <td>{{ ticket.get_ticket_type_display }}</td>
+            <td>${{ ticket.final_amount }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No tickets found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

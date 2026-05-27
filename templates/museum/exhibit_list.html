@@ -1,0 +1,92 @@
+{% extends 'museum/base.html' %}
+{% block title %}Exhibits - Museum{% endblock %}
+{% block content %}
+<h1>Exhibits</h1>
+
+<form method="get" class="row g-3 mt-2">
+    <div class="col-md-3">
+        <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ search_query }}">
+    </div>
+    <div class="col-md-2">
+        <select name="art_type" class="form-select">
+            <option value="">All Art Types</option>
+            {% for type in art_types %}
+            <option value="{{ type.id }}" {% if type.id|stringformat:"s" == request.GET.art_type %}selected{% endif %}>{{ type.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="hall" class="form-select">
+            <option value="">All Halls</option>
+            {% for hall in halls %}
+            <option value="{{ hall.id }}" {% if hall.id|stringformat:"s" == request.GET.hall %}selected{% endif %}>Hall {{ hall.number }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="floor" class="form-select">
+            <option value="">Any Floor</option>
+            {% for i in "12345"|make_list %}
+            <option value="{{ forloop.counter }}" {% if forloop.counter|stringformat:"s" == request.GET.floor %}selected{% endif %}>Floor {{ forloop.counter }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-check-label">
+            <input type="checkbox" name="recent" value="1" {% if request.GET.recent %}checked{% endif %} class="form-check-input">
+            Last 6 months
+        </label>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+    </div>
+</form>
+
+<div class="row mt-4">
+    {% for exhibit in page_obj %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ exhibit.name }}</h5>
+                <p class="card-text">{{ exhibit.description|truncatewords:15 }}</p>
+                <p><strong>Author:</strong> {{ exhibit.author|default:"Unknown" }}</p>
+                <p><strong>Art Type:</strong> {{ exhibit.art_type.name }}</p>
+                <p><strong>Hall:</strong> {{ exhibit.hall.name }} (Floor {{ exhibit.hall.floor }})</p>
+                <p><strong>Acquired:</strong> {{ exhibit.acquisition_date|date:"d/m/Y" }}</p>
+                {% if exhibit.assigned_employee %}
+                <p><small>Curator: {{ exhibit.assigned_employee.last_name }}</small></p>
+                {% endif %}
+                {% if exhibit.is_displayed %}
+                <span class="badge bg-success">On Display</span>
+                {% else %}
+                <span class="badge bg-secondary">In Storage</span>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'exhibit_detail' pk=exhibit.pk %}" class="btn btn-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No exhibits found.</p>
+    {% endfor %}
+</div>
+
+<nav>
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

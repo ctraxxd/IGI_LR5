@@ -1,0 +1,27 @@
+{% extends 'museum/base.html' %}
+{% block title %}{{ exhibit.name }} - Museum{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h4>{{ exhibit.name }}</h4>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <tr><th>Art Type</th><td>{{ exhibit.art_type.name }}</td></tr>
+            <tr><th>Author</th><td>{{ exhibit.author|default:"Unknown" }}</td></tr>
+            <tr><th>Year Created</th><td>{{ exhibit.year_created|default:"Unknown" }}</td></tr>
+            <tr><th>Acquisition Date</th><td>{{ exhibit.acquisition_date|date:"d/m/Y" }}</td></tr>
+            <tr><th>Hall</th><td>{{ exhibit.hall.name }} (Floor {{ exhibit.hall.floor }})</td></tr>
+            <tr><th>Assigned Employee</th><td>{{ exhibit.assigned_employee|default:"Not assigned" }}</td></tr>
+            <tr><th>Status</th><td>{% if exhibit.is_displayed %}<span class="badge bg-success">On Display</span>{% else %}<span class="badge bg-secondary">In Storage</span>{% endif %}</td></tr>
+            <tr><th>Description</th><td>{{ exhibit.description|default:"No description" }}</td></tr>
+            <tr><th>Added</th><td>{{ exhibit.created_at|date:"d/m/Y H:i:s" }} UTC / {{ exhibit.created_at|date:"d/m/Y H:i:s" }} Local</td></tr>
+        </table>
+    </div>
+</div>
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

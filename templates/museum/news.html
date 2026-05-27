@@ -1,0 +1,32 @@
+{% extends 'museum/base.html' %}
+{% block title %}Exhibitions - Museum{% endblock %}
+{% block content %}
+<h1>Current Exhibitions</h1>
+<div class="row mt-4">
+    {% for exhibition in exhibitions %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ exhibition.name }}</h5>
+                <p class="card-text">{{ exhibition.description|truncatewords:20 }}</p>
+                <p><small class="text-muted">{{ exhibition.start_date|date:"d/m/Y" }} - {{ exhibition.end_date|date:"d/m/Y" }}</small></p>
+            </div>
+            <div class="card-footer">
+                {% if exhibition.is_active %}
+                <span class="badge bg-success">Active</span>
+                {% else %}
+                <span class="badge bg-secondary">Ended</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No current exhibitions.</p>
+    {% endfor %}
+</div>
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

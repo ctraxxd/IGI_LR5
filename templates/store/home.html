@@ -1,0 +1,61 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Home - Household Chemicals Store{% endblock %}
+
+{% block content %}
+<div class="jumbotron p-5 bg-light rounded">
+    <h1 class="display-4">Welcome to Household Chemicals Store</h1>
+    <p class="lead">Your one-stop shop for quality household products.</p>
+    <hr class="my-4">
+    <p>Explore our wide range of products from trusted manufacturers.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'product_list' %}" role="button">Browse Products</a>
+    <a class="btn btn-success btn-lg" href="{% url 'register' %}" role="button">Register Now</a>
+</div>
+
+{% if latest_product %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h4>Latest Product</h4>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ latest_product.name }}</h5>
+        <p class="card-text">{{ latest_product.description|truncatewords:30 }}</p>
+        <p><strong>Price:</strong> ${{ latest_product.price }}</p>
+        <p><strong>Category:</strong> {{ latest_product.category.name }}</p>
+        <p><strong>Manufacturer:</strong> {{ latest_product.manufacturer.name }}</p>
+        <a href="{% url 'product_detail' pk=latest_product.pk %}" class="btn btn-outline-primary">Learn More</a>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Currency Rates (USD)</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for currency, rate in currency_rates.items %}
+                    {% if currency in "BYN EUR RUB" %}
+                    <li>{{ currency }}: {{ rate }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Did You Know?</div>
+            <div class="card-body">
+                <p class="card-text">{{ random_fact }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <strong>Current Time:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

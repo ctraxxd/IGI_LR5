@@ -1,0 +1,130 @@
+{% extends 'museum/base.html' %}
+{% block title %}Async Demo{% endblock %}
+{% block content %}
+<h1><i class="bi bi-lightning-charge"></i> Async/Await Demo</h1>
+<p class="lead">Demonstrating parallel API requests and concurrent task execution</p>
+
+<div class="alert alert-info">
+    <strong>What this demonstrates:</strong>
+    <ul>
+        <li>Parallel API requests using <code>asyncio</code> and <code>aiohttp</code></li>
+        <li>Concurrent task execution with <code>asyncio.gather()</code></li>
+        <li>Performance benefits of async programming</li>
+    </ul>
+</div>
+
+<!-- Execution Stats -->
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <i class="bi bi-speedometer2"></i> Performance Stats
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Total Execution Time</h5>
+        <p class="display-4 text-success">{{ results.execution_time }}s</p>
+        <p class="text-muted">All API requests and tasks ran concurrently!</p>
+    </div>
+</div>
+
+<!-- API Results -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <i class="bi bi-globe"></i> Museum API Results (Parallel Fetch)
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for result in results.api_results %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 {% if result.success %}border-success{% else %}border-danger{% endif %}">
+                    <div class="card-header">
+                        {{ result.name }}
+                        {% if result.success %}
+                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Success</span>
+                        {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Failed</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Status:</strong> {{ result.status }}</p>
+                        {% if result.error %}
+                        <p class="text-danger"><small>{{ result.error }}</small></p>
+                        {% endif %}
+                        <p class="text-muted"><small>{{ result.data_sample|truncatechars:100 }}</small></p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Task Results -->
+<div class="card mb-4">
+    <div class="card-header bg-warning">
+        <i class="bi bi-cpu"></i> Concurrent Task Results
+    </div>
+    <div class="card-body">
+        <ul class="list-group">
+            {% for task in results.task_results %}
+            <li class="list-group-item">
+                <i class="bi bi-check-circle-fill text-success"></i> {{ task }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- Local Artworks -->
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        <i class="bi bi-image"></i> Local Museum Exhibits
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for artwork in results.artworks %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ artwork.name }}</h6>
+                        <p class="card-text">
+                            <small>
+                                <strong>Author:</strong> {{ artwork.author|default:"Unknown" }}<br>
+                                <strong>Year:</strong> {{ artwork.year_created|default:"Unknown" }}
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-muted">No exhibits available. Run <code>python manage.py populate_data</code> first.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Code Example -->
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        <i class="bi bi-code-slash"></i> How It Works
+    </div>
+    <div class="card-body">
+        <pre class="bg-light p-3"><code># Fetch multiple APIs in parallel
+async with aiohttp.ClientSession() as session:
+    tasks = [fetch_api(session, url) for url in api_urls]
+    results = await asyncio.gather(*tasks)
+
+# Run concurrent tasks
+tasks = [
+    simulate_task('Task A', 0.5),
+    simulate_task('Task B', 0.3),
+    simulate_task('Task C', 0.4),
+]
+results = await asyncio.gather(*tasks)</code></pre>
+    </div>
+</div>
+
+<a href="{% url 'home' %}" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left"></i> Back to Home
+</a>
+{% endblock %}

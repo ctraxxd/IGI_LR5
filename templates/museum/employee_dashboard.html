@@ -1,0 +1,61 @@
+{% extends 'museum/base.html' %}
+{% block title %}Employee Dashboard{% endblock %}
+{% block content %}
+<h1>Employee Dashboard</h1>
+<div class="card mt-4">
+    <div class="card-header">
+        <h4>{{ employee.first_name }} {{ employee.last_name }}</h4>
+    </div>
+    <div class="card-body">
+        <p><strong>Position:</strong> {{ employee.position.name }}</p>
+        <p><strong>Hall:</strong> {{ employee.hall.name|default:"Not assigned" }}</p>
+        <p><strong>Phone:</strong> {{ employee.phone }}</p>
+        <p><strong>Email:</strong> {{ employee.email }}</p>
+    </div>
+</div>
+
+<h4 class="mt-4">Assigned Exhibits</h4>
+<table class="table mt-3">
+    <thead>
+        <tr><th>Name</th><th>Art Type</th><th>Hall</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+        {% for exhibit in assigned_exhibits %}
+        <tr>
+            <td>{{ exhibit.name }}</td>
+            <td>{{ exhibit.art_type.name }}</td>
+            <td>{{ exhibit.hall.name|default:"Not assigned" }}</td>
+            <td>{% if exhibit.is_displayed %}On Display{% else %}In Storage{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No exhibits assigned.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4 class="mt-4">Guided Tours</h4>
+<table class="table mt-3">
+    <thead>
+        <tr><th>Code</th><th>Name</th><th>Date</th><th>Season</th><th>Group Size</th></tr>
+    </thead>
+    <tbody>
+        {% for tour in guided_tours %}
+        <tr>
+            <td>{{ tour.code }}</td>
+            <td>{{ tour.name }}</td>
+            <td>{{ tour.date|date:"d/m/Y H:i" }}</td>
+            <td>{{ tour.get_season_display }}</td>
+            <td>{{ tour.group_size }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No tours assigned.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

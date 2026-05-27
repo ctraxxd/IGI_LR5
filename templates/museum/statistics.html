@@ -1,0 +1,291 @@
+{% extends 'museum/base.html' %}
+{% block title %}Statistics{% endblock %}
+{% block extra_css %}
+<style>
+    .chart-container { position: relative; height: 300px; margin: 20px 0; }
+</style>
+{% endblock %}
+{% block content %}
+<h1>Statistics Dashboard</h1>
+
+<div class="row mt-4">
+    <div class="col-md-2">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Exhibits</h5>
+                <h2>{{ total_exhibits }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Halls</h5>
+                <h2>{{ total_halls }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Employees</h5>
+                <h2>{{ total_employees }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Tours</h5>
+                <h2>{{ total_tours }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Tickets</h5>
+                <h2>{{ total_tickets }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h5 class="card-title">Revenue</h5>
+                <h2>${{ total_revenue|floatformat:2 }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Exhibits by Art Type</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>Art Type</th><th>Count</th></tr></thead>
+                    <tbody>
+                        {% for type in exhibits_by_type %}
+                        <tr>
+                            <td>{{ type.name }}</td>
+                            <td>{{ type.exhibit_count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Exhibits by Hall</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>Hall</th><th>Count</th></tr></thead>
+                    <tbody>
+                        {% for hall in exhibits_by_hall %}
+                        <tr>
+                            <td>{{ hall.name }}</td>
+                            <td>{{ hall.exhibit_count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Tours by Season</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>Season</th><th>Tours</th><th>Participants</th></tr></thead>
+                    <tbody>
+                        {% for item in tours_by_season %}
+                        <tr>
+                            <td>{{ item.season }}</td>
+                            <td>{{ item.tour_count }}</td>
+                            <td>{{ item.total_participants|default:0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Employees by Floor</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead><tr><th>Floor</th><th>Employees</th></tr></thead>
+                    <tbody>
+                        {% for item in employees_by_floor %}
+                        <tr>
+                            <td>{{ item.floor }}</td>
+                            <td>{{ item.employee_count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <strong>Statistics generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+
+<!-- Charts Section -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Exhibits by Art Type</div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="exhibitsByTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Tours by Season</div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="toursBySeasonChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Exhibits by Hall</div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="exhibitsByHallChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Employees by Floor</div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="employeesByFloorChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Exhibits by Art Type Chart
+    const exhibitsByTypeCtx = document.getElementById('exhibitsByTypeChart').getContext('2d');
+    new Chart(exhibitsByTypeCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for type in exhibits_by_type %}'{{ type.name }}',{% endfor %}],
+            datasets: [{
+                label: 'Number of Exhibits',
+                data: [{% for type in exhibits_by_type %}{{ type.exhibit_count }},{% endfor %}],
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Tours by Season Chart
+    const toursBySeasonCtx = document.getElementById('toursBySeasonChart').getContext('2d');
+    new Chart(toursBySeasonCtx, {
+        type: 'pie',
+        data: {
+            labels: [{% for item in tours_by_season %}'{{ item.season }}',{% endfor %}],
+            datasets: [{
+                data: [{% for item in tours_by_season %}{{ item.tour_count }},{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Exhibits by Hall Chart
+    const exhibitsByHallCtx = document.getElementById('exhibitsByHallChart').getContext('2d');
+    new Chart(exhibitsByHallCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for hall in exhibits_by_hall %}'{{ hall.name }}',{% endfor %}],
+            datasets: [{
+                data: [{% for hall in exhibits_by_hall %}{{ hall.exhibit_count }},{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Employees by Floor Chart
+    const employeesByFloorCtx = document.getElementById('employeesByFloorChart').getContext('2d');
+    new Chart(employeesByFloorCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for item in employees_by_floor %}'Floor {{ item.floor }}',{% endfor %}],
+            datasets: [{
+                label: 'Employees',
+                data: [{% for item in employees_by_floor %}{{ item.employee_count }},{% endfor %}],
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'store/base.html' %}
+{% block title %}About - Household Chemicals Store{% endblock %}
+{% block content %}
+<h1>About Our Company</h1>
+<p class="lead">We are a leading retailer of household chemicals.</p>
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Our Mission</h5>
+        <p class="card-text">To provide high-quality household products at affordable prices.</p>
+        <h5 class="card-title mt-4">Our History</h5>
+        <p class="card-text">Founded in 2020, we have grown to serve thousands of satisfied customers.</p>
+        <h5 class="card-title mt-4">Company Details</h5>
+        <table class="table table-bordered mt-3">
+            <tr><th>Registration Number</th><td>BY-2020-12345</td></tr>
+            <tr><th>Tax ID</th><td>123456789</td></tr>
+            <tr><th>Legal Address</th><td>Minsk, Belarus</td></tr>
+        </table>
+    </div>
+</div>
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}

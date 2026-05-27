@@ -1,0 +1,28 @@
+{% extends 'store/base.html' %}
+{% block title %}News - Household Chemicals Store{% endblock %}
+{% block content %}
+<h1>Latest News</h1>
+<div class="row mt-4">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                <p><small class="text-muted">Added: {{ product.created_at|date:"d/m/Y" }}</small></p>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'product_detail' pk=product.pk %}" class="btn btn-primary">Read More</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No news available.</p>
+    {% endfor %}
+</div>
+<div class="alert alert-info mt-4">
+    <strong>Page generated:</strong><br>
+    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+</div>
+{% endblock %}
