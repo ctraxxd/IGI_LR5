@@ -74,7 +74,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
+# Check for DATABASE_URL from environment (Render provides this)
 DATABASE_URL = os.getenv('DATABASE_URL')
+
 if DATABASE_URL:
     import dj_database_url
     DATABASES = {
@@ -86,6 +88,9 @@ if DATABASE_URL:
     # Log database configuration for debugging
     print(f"Using PostgreSQL database: {DATABASES['default']['ENGINE']}")
 else:
+    # Check if running on Render (has RENDER env var)
+    if os.getenv('RENDER'):
+        print("WARNING: Running on Render but DATABASE_URL not set!")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
