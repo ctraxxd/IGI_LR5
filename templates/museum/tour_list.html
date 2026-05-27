@@ -31,6 +31,7 @@
             <th>Group Size</th>
             <th>Guide</th>
             <th>Price</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -44,10 +45,19 @@
             <td>{{ tour.group_size }}</td>
             <td>{{ tour.guide|default:"TBA" }}</td>
             <td>${{ tour.price }}</td>
+            <td>
+                {% if tour.date < current_time_local %}
+                    <span class="badge bg-secondary">Past</span>
+                {% elif tour.date.date == current_time_local.date %}
+                    <span class="badge bg-success">Today</span>
+                {% else %}
+                    <span class="badge bg-primary">Upcoming</span>
+                {% endif %}
+            </td>
             <td><a href="{% url 'tour_detail' pk=tour.pk %}" class="btn btn-sm btn-primary">View</a></td>
         </tr>
         {% empty %}
-        <tr><td colspan="8">No tours found.</td></tr>
+        <tr><td colspan="9">No tours found.</td></tr>
         {% endfor %}
     </tbody>
 </table>
@@ -67,8 +77,8 @@
 </nav>
 
 <div class="alert alert-info mt-4">
-    <strong>Page generated:</strong><br>
-    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
-    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+    <strong>Current Time:</strong><br>
+    Server: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Minsk: {{ current_time_local|date:"d/m/Y H:i:s" }}
 </div>
 {% endblock %}

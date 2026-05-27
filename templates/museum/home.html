@@ -14,6 +14,9 @@
     <div class="card-header">
         <h4>Featured Exhibit</h4>
     </div>
+    {% if latest_exhibit.photo_url %}
+    <img src="{{ latest_exhibit.photo_url }}" class="card-img-top" alt="{{ latest_exhibit.name }}" style="max-height: 300px; object-fit: cover;">
+    {% endif %}
     <div class="card-body">
         <h5 class="card-title">{{ latest_exhibit.name }}</h5>
         <p class="card-text">{{ latest_exhibit.description|truncatewords:30 }}</p>
@@ -52,7 +55,7 @@
 
 <div class="alert alert-info mt-4">
     <strong>Current Time:</strong><br>
-    UTC: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
-    Local: {{ current_time_local|date:"d/m/Y H:i:s" }}
+    Server: {{ current_time_utc|date:"d/m/Y H:i:s" }}<br>
+    Minsk: {{ current_time_local|date:"d/m/Y H:i:s" }}
 </div>
 {% endblock %}

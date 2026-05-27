@@ -13,7 +13,15 @@
             </div>
             <div class="card-footer">
                 {% if exhibition.is_active %}
-                <span class="badge bg-primary">Planned</span>
+                    {% if exhibition.end_date >= current_time_local.date %}
+                        {% if exhibition.start_date <= current_time_local.date %}
+                            <span class="badge bg-success">Current</span>
+                        {% else %}
+                            <span class="badge bg-primary">Planned</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge bg-secondary">Closed</span>
+                    {% endif %}
                 {% else %}
                 <span class="badge bg-secondary">Closed</span>
                 {% endif %}

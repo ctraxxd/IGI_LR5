@@ -108,20 +108,22 @@ class Command(BaseCommand):
             employees[last] = emp
         self.stdout.write(f'Created {len(employees)} employees')
 
-        # Create exhibits with placeholder images (acquisition dates in 2026)
+        # Create exhibits with placeholder images (acquisition dates - recent and upcoming)
+        # Today is May 27, 2026
+        # Using picsum.photos with specific IDs for reliable images
         exhibits_data = [
-            ('Mona Lisa Replica', 'Painting', '2026-01-15', 1503, 'Leonardo da Vinci', 'Famous portrait', 1, 'Ivanov', 'https://picsum.photos/seed/monalisa/400/300'),
-            ('The Scream Copy', 'Painting', '2026-02-20', 1893, 'Edvard Munch', 'Expressionist masterpiece', 2, 'Petrova', 'https://picsum.photos/seed/scream/400/300'),
-            ('David Sculpture', 'Sculpture', '2026-03-10', 1504, 'Michelangelo', 'Renaissance sculpture', 5, 'Morozova', 'https://picsum.photos/seed/david/400/300'),
-            ('Sunflowers', 'Painting', '2026-04-05', 1888, 'Vincent van Gogh', 'Post-impressionist work', 2, 'Petrova', 'https://picsum.photos/seed/sunflowers/400/300'),
-            ('The Kiss', 'Painting', '2026-05-01', 1908, 'Gustav Klimt', 'Art Nouveau painting', 4, 'Lebedeva', 'https://picsum.photos/seed/kiss/400/300'),
-            ('Thinker', 'Sculpture', '2026-05-20', 1902, 'Auguste Rodin', 'Bronze sculpture', 5, 'Morozova', 'https://picsum.photos/seed/thinker/400/300'),
-            ('Girl with a Pearl Earring', 'Painting', '2026-06-01', 1665, 'Johannes Vermeer', 'Dutch Golden Age', 1, 'Ivanov', 'https://picsum.photos/seed/girl/400/300'),
-            ('Starry Night', 'Painting', '2026-06-15', 1889, 'Vincent van Gogh', 'Night landscape', 2, 'Petrova', 'https://picsum.photos/seed/starry/400/300'),
-            ('Asian Dragon', 'Sculpture', '2026-07-01', 1750, 'Unknown Master', 'Chinese bronze dragon', 3, 'Kozlova', 'https://picsum.photos/seed/dragon/400/300'),
-            ('Modern Abstract', 'Modern Art', '2026-08-01', 2020, 'Contemporary Artist', 'Abstract composition', 4, 'Lebedeva', 'https://picsum.photos/seed/abstract/400/300'),
-            ('Cherry Blossom', 'Photography', '2026-09-01', 2022, 'Japanese Photographer', 'Spring in Kyoto', 3, 'Kozlova', 'https://picsum.photos/seed/sakura/400/300'),
-            ('Geometric Dreams', 'Graphics', '2026-10-01', 2021, 'Digital Artist', 'Digital art piece', 4, 'Lebedeva', 'https://picsum.photos/seed/geometry/400/300'),
+            ('Mona Lisa Replica', 'Painting', '2026-01-15', 1503, 'Leonardo da Vinci', 'Famous portrait', 1, 'Ivanov', 'https://picsum.photos/id/1015/400/300'),
+            ('The Scream Copy', 'Painting', '2026-02-20', 1893, 'Edvard Munch', 'Expressionist masterpiece', 2, 'Petrova', 'https://picsum.photos/id/1016/400/300'),
+            ('David Sculpture', 'Sculpture', '2026-03-10', 1504, 'Michelangelo', 'Renaissance sculpture', 5, 'Morozova', 'https://picsum.photos/id/1017/400/300'),
+            ('Sunflowers', 'Painting', '2026-04-05', 1888, 'Vincent van Gogh', 'Post-impressionist work', 2, 'Petrova', 'https://picsum.photos/id/1018/400/300'),
+            ('The Kiss', 'Painting', '2026-05-01', 1908, 'Gustav Klimt', 'Art Nouveau painting', 4, 'Lebedeva', 'https://picsum.photos/id/1019/400/300'),
+            ('Thinker', 'Sculpture', '2026-05-20', 1902, 'Auguste Rodin', 'Bronze sculpture', 5, 'Morozova', 'https://picsum.photos/id/1020/400/300'),
+            ('Girl with a Pearl Earring', 'Painting', '2026-05-25', 1665, 'Johannes Vermeer', 'Dutch Golden Age', 1, 'Ivanov', 'https://picsum.photos/id/1021/400/300'),
+            ('Starry Night', 'Painting', '2026-06-01', 1889, 'Vincent van Gogh', 'Night landscape', 2, 'Petrova', 'https://picsum.photos/id/1022/400/300'),
+            ('Asian Dragon', 'Sculpture', '2026-06-15', 1750, 'Unknown Master', 'Chinese bronze dragon', 3, 'Kozlova', 'https://picsum.photos/id/1023/400/300'),
+            ('Modern Abstract', 'Modern Art', '2026-07-01', 2020, 'Contemporary Artist', 'Abstract composition', 4, 'Lebedeva', 'https://picsum.photos/id/1024/400/300'),
+            ('Cherry Blossom', 'Photography', '2026-08-01', 2022, 'Japanese Photographer', 'Spring in Kyoto', 3, 'Kozlova', 'https://picsum.photos/id/1025/400/300'),
+            ('Geometric Dreams', 'Graphics', '2026-09-01', 2021, 'Digital Artist', 'Digital art piece', 4, 'Lebedeva', 'https://picsum.photos/id/1026/400/300'),
         ]
         exhibits = {}
         for name, art_type, acq_date, year, author, desc, hall_num, emp_last, photo_url in exhibits_data:
@@ -139,10 +141,9 @@ class Command(BaseCommand):
                     'photo_url': photo_url,
                 }
             )
-            # Update photo_url if exhibit was just created
-            if created and photo_url:
-                exhibit.photo_url = photo_url
-                exhibit.save()
+            # Always update photo_url to ensure it's set
+            exhibit.photo_url = photo_url
+            exhibit.save()
             exhibits[name] = exhibit
         self.stdout.write(f'Created {len(exhibits)} exhibits')
 
@@ -164,14 +165,14 @@ class Command(BaseCommand):
                 exp.exhibits.add(exhibits.get(en))
         self.stdout.write('Created expositions')
 
-        # Create exhibitions (temporary) - some closed, some planned
-        # Today is May 27, 2026 - so past exhibitions are closed, future are planned
+        # Create exhibitions (temporary) - one CURRENT, some closed, some planned
+        # Today is May 27, 2026
         exhibitions_data = [
             ('Winter Wonderland 2026', 'Winter-themed art', '2026-01-01', '2026-02-28', ['Starry Night', 'Cherry Blossom'], False),  # closed
-            ('Spring Renewal 2026', 'Spring collection', '2026-03-01', '2026-05-25', ['Sunflowers', 'Cherry Blossom', 'Geometric Dreams'], False),  # closed (just ended)
-            ('Summer Impressions 2026', 'Summer art collection', '2026-06-01', '2026-08-31', ['Mona Lisa Replica', 'The Kiss', 'Girl with a Pearl Earring'], True),  # planned
-            ('Autumn Classics 2026', 'Classical masterpieces', '2026-09-01', '2026-11-30', ['David Sculpture', 'Thinker', 'Asian Dragon'], True),  # planned
-            ('New Year Exhibition 2027', 'New Year special', '2026-12-15', '2027-01-15', ['Modern Abstract', 'Geometric Dreams'], True),  # planned
+            ('Spring Masters', 'Spring collection - CURRENT EXHIBITION', '2026-05-15', '2026-05-31', ['Sunflowers', 'The Kiss', 'Girl with a Pearl Earring'], True),  # CURRENT (ends May 31)
+            ('Summer Impressions 2026', 'Summer art collection', '2026-06-05', '2026-08-31', ['Mona Lisa Replica', 'David Sculpture', 'Thinker'], True),  # planned
+            ('Autumn Classics 2026', 'Classical masterpieces', '2026-09-01', '2026-11-30', ['Asian Dragon', 'Modern Abstract'], True),  # planned
+            ('New Year Exhibition 2027', 'New Year special', '2026-12-15', '2027-01-15', ['Geometric Dreams', 'Cherry Blossom'], True),  # planned
         ]
         for name, desc, start, end, exhibit_names, is_active in exhibitions_data:
             exh, created = Exhibition.objects.get_or_create(
@@ -183,19 +184,21 @@ class Command(BaseCommand):
                     'is_active': is_active,
                 }
             )
+            # Clear existing exhibits and add new ones
+            exh.exhibits.clear()
             for en in exhibit_names:
                 exh.exhibits.add(exhibits.get(en))
-        self.stdout.write('Created 5 exhibitions (2 closed, 3 planned)')
+        self.stdout.write('Created 5 exhibitions (1 closed, 1 current, 3 planned)')
 
-        # Create tours for 2026-2027 (only future tours from May 27, 2026)
+        # Create tours for 2026-2027 (only FUTURE tours from May 27, 2026)
         tours_data = [
-            ('TOUR-005', 'Summer Impressions', 'Summer exhibition tour', '2026-06-10 10:00:00', 15, 'summer', 'Sidorov', 32.00),
-            ('TOUR-006', 'Evening at the Museum', 'Special evening tour', '2026-07-20 18:00:00', 20, 'summer', 'Pavlova', 40.00),
-            ('TOUR-007', 'Autumn Classics', 'Classical masterpieces', '2026-09-15 12:00:00', 15, 'autumn', 'Kozlova', 30.00),
-            ('TOUR-008', 'Modern Art Discovery', 'Contemporary artworks', '2026-10-25 14:00:00', 18, 'autumn', 'Petrova', 38.00),
-            ('TOUR-009', 'Winter Wonderland', 'Winter-themed exhibits', '2026-12-10 11:00:00', 20, 'winter', 'Sidorov', 35.00),
-            ('TOUR-010', 'New Year Special', 'Festive season tour', '2026-12-28 15:00:00', 25, 'winter', 'Pavlova', 45.00),
-            ('TOUR-011', 'Early 2027 Art Tour', 'New year collection', '2027-01-15 10:00:00', 15, 'winter', 'Lebedeva', 30.00),
+            ('TOUR-006', 'Evening at the Museum', 'Special evening tour', '2026-06-05 18:00:00', 20, 'summer', 'Pavlova', 40.00),
+            ('TOUR-007', 'Summer Classics', 'Classical masterpieces', '2026-06-20 12:00:00', 15, 'summer', 'Sidorov', 35.00),
+            ('TOUR-008', 'Modern Art Discovery', 'Contemporary artworks', '2026-07-15 14:00:00', 18, 'summer', 'Petrova', 38.00),
+            ('TOUR-009', 'Autumn Colors', 'Autumn exhibition tour', '2026-09-10 11:00:00', 15, 'autumn', 'Kozlova', 32.00),
+            ('TOUR-010', 'Winter Wonderland', 'Winter-themed exhibits', '2026-12-15 12:00:00', 20, 'winter', 'Sidorov', 40.00),
+            ('TOUR-011', 'New Year Special', 'Festive season tour', '2026-12-28 15:00:00', 25, 'winter', 'Pavlova', 45.00),
+            ('TOUR-012', 'Early 2027 Art Tour', 'New year collection', '2027-01-10 10:00:00', 15, 'winter', 'Lebedeva', 35.00),
         ]
         tours = {}
         for code, name, desc, tour_date, size, season, guide_last, price in tours_data:
