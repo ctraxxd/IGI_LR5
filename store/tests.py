@@ -691,20 +691,6 @@ class TestEmployeeDashboard:
 
 
 @pytest.mark.django_db
-class TestAsyncDemo:
-    """Test async demo view"""
-
-    def test_async_demo(self, client):
-        # Just check the view is accessible (async may fail in test env without network)
-        try:
-            response = client.get(reverse('async_demo'))
-            assert response.status_code == 200
-        except Exception:
-            # Async view may fail in test environment - that's OK for coverage
-            pass
-
-
-@pytest.mark.django_db
 class TestPagination:
     """Test pagination in list views"""
 

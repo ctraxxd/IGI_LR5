@@ -102,11 +102,12 @@ class ReviewForm(forms.ModelForm):
     """Review form"""
     class Meta:
         model = Review
-        fields = ['rating', 'text', 'visit_date']
+        fields = ['rating', 'text', 'visit_date', 'photo']
         widgets = {
             'rating': forms.Select(attrs={'class': 'form-control'}, choices=Review.RATING_CHOICES),
             'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'visit_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'photo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
     def clean_rating(self):
@@ -114,6 +115,32 @@ class ReviewForm(forms.ModelForm):
         if not 1 <= rating <= 5:
             raise ValidationError('Rating must be between 1 and 5')
         return rating
+
+
+class EmployeeForm(forms.ModelForm):
+    """Employee form with photo"""
+    class Meta:
+        model = Employee
+        fields = ['first_name', 'last_name', 'middle_name', 'phone', 'email', 'position', 'hall', 'hire_date', 'salary', 'photo']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'middle_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+375 (XX) XXX-XX-XX'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'position': forms.Select(attrs={'class': 'form-control'}),
+            'hall': forms.Select(attrs={'class': 'form-control'}),
+            'hire_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'salary': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'photo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        phone_pattern = r'^\+375\s?\(\d{2}\)\s?\d{3}-\d{2}-\d{2}$'
+        if not re.match(phone_pattern, phone):
+            raise ValidationError('Phone must be in format: +375 (XX) XXX-XX-XX')
+        return phone
 
 
 class PromoCodeForm(forms.ModelForm):

@@ -70,6 +70,7 @@ class Employee(models.Model):
     hall = models.ForeignKey(Hall, on_delete=models.SET_NULL, null=True, blank=True, related_name='employees')
     hire_date = models.DateField()
     salary = models.DecimalField(max_digits=10, decimal_places=2)
+    photo = models.ImageField(upload_to='employee_photos/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -308,6 +309,7 @@ class Review(models.Model):
     rating = models.IntegerField(choices=RATING_CHOICES)
     text = models.TextField()
     visit_date = models.DateField(null=True, blank=True)
+    photo = models.ImageField(upload_to='review_photos/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

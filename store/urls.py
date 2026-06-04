@@ -13,7 +13,7 @@ urlpatterns = [
     path('privacy/', views.privacy, name='privacy'),
     path('vacancies/', views.vacancies, name='vacancies'),
     path('calendar/', views.calendar, name='calendar'),
-    
+
     # Halls
     path('halls/', views.hall_list, name='hall_list'),
     
@@ -31,7 +31,10 @@ urlpatterns = [
     re_path(r'^tickets/(?P<pk>\d+)/$', views.ticket_detail, name='ticket_detail'),
     
     # Reviews
+    path('reviews/', views.review_list, name='review_list'),
     path('reviews/create/', views.review_create, name='review_create'),
+    re_path(r'^reviews/(?P<pk>\d+)/update/$', views.review_update, name='review_update'),
+    re_path(r'^reviews/(?P<pk>\d+)/delete/$', views.review_delete, name='review_delete'),
     
     # Employee dashboard
     path('employee/', views.employee_dashboard, name='employee_dashboard'),

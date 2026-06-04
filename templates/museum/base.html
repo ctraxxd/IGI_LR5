@@ -30,6 +30,7 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'exhibit_list' %}">Exhibits</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'tour_list' %}">Tours</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'contacts' %}">Contacts</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'review_list' %}">Reviews</a></li>
                     {% if user.is_staff %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'statistics' %}">Statistics</a></li>
                     {% endif %}

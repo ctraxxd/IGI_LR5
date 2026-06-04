@@ -7,6 +7,13 @@
     <div class="col-md-4 mb-4">
         <div class="card">
             <div class="card-body text-center">
+                {% if employee.photo %}
+                <img src="{{ employee.photo.url }}" alt="{{ employee.first_name }} {{ employee.last_name }}" class="img-fluid rounded-circle mb-3" style="max-width: 150px; max-height: 150px; object-fit: cover;">
+                {% else %}
+                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 150px; height: 150px;">
+                    <span class="text-white display-4">{{ employee.first_name|first }}{{ employee.last_name|first }}</span>
+                </div>
+                {% endif %}
                 <h5 class="card-title">{{ employee.first_name }} {{ employee.last_name }}</h5>
                 <p class="text-muted">{{ employee.position.name }}</p>
                 {% if employee.hall %}

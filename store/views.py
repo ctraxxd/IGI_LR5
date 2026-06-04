@@ -418,7 +418,7 @@ def ticket_list(request):
 def review_create(request):
     """Create new review"""
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
+        form = ReviewForm(request.POST, request.FILES)
         if form.is_valid():
             review = form.save(commit=False)
             try:
@@ -432,8 +432,68 @@ def review_create(request):
                 return redirect('profile')
     else:
         form = ReviewForm()
-    
+
     return render(request, 'museum/review_form.html', {'form': form})
+
+
+@login_required
+def review_update(request, pk):
+    """Update existing review"""
+    review = get_object_or_404(Review, pk=pk)
+    
+    # Only allow the owner to edit
+    if review.client.user != request.user:
+        messages.error(request, 'You can only edit your own reviews')
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, request.FILES, instance=review)
+        if form.is_valid():
+            form.save()
+            logger.info(f'Review updated by {request.user.username}')
+            messages.success(request, 'Review updated successfully')
+            return redirect('home')
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(request, 'museum/review_form.html', {'form': form, 'is_update': True})
+
+
+@login_required
+def review_delete(request, pk):
+    """Delete existing review"""
+    review = get_object_or_404(Review, pk=pk)
+    
+    # Only allow the owner to delete
+    if review.client.user != request.user:
+        messages.error(request, 'You can only delete your own reviews')
+        return redirect('home')
+    
+    if request.method == 'POST':
+        review.delete()
+        logger.info(f'Review deleted by {request.user.username}')
+        messages.success(request, 'Review deleted successfully')
+    
+    return redirect('home')
+
+
+def review_list(request):
+    """List all reviews"""
+    from django.core.paginator import Paginator
+    reviews = Review.objects.select_related('client').all()
+    
+    paginator = Paginator(reviews, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'reviews': page_obj,
+        'is_paginated': True,
+        'page_obj': page_obj,
+        'current_time_utc': timezone.now(),
+        'current_time_local': timezone.localtime(),
+    }
+    return render(request, 'museum/review_list.html', context)
 
 
 # API views
