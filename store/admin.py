@@ -32,11 +32,37 @@ class HallAdmin(admin.ModelAdmin):
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ['last_name', 'first_name', 'position', 'hall', 'phone', 'hire_date']
+    list_display = ['last_name', 'first_name', 'position', 'hall', 'phone', 'hire_date', 'has_photo']
     list_filter = ['position', 'hall', 'hire_date']
     search_fields = ['first_name', 'last_name', 'email', 'phone']
-    readonly_fields = ['created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at', 'photo_preview']
     list_select_related = ['position', 'hall']
+    fieldsets = (
+        ('Personal Information', {
+            'fields': ('user', 'first_name', 'last_name', 'middle_name', 'phone', 'email')
+        }),
+        ('Work Information', {
+            'fields': ('position', 'hall', 'hire_date', 'salary')
+        }),
+        ('Photo', {
+            'fields': ('photo_preview', 'photo'),
+            'description': 'Upload employee photo (optional)'
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def has_photo(self, obj):
+        return format_html('<span style="color: green;">✓</span>') if obj.photo else format_html('<span style="color: red;">✗</span>')
+    has_photo.short_description = 'Photo'
+
+    def photo_preview(self, obj):
+        if obj.photo:
+            return format_html('<img src="{}" style="max-width: 150px; border-radius: 50%;" />', obj.photo.url)
+        return 'No photo uploaded'
+    photo_preview.short_description = 'Preview'
 
 
 @admin.register(Exhibit)
@@ -149,10 +175,33 @@ class PromoCodeAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['client', 'rating', 'visit_date', 'created_at']
+    list_display = ['client', 'rating', 'visit_date', 'created_at', 'has_photo']
     list_filter = ['rating', 'created_at']
     search_fields = ['client__last_name', 'text']
-    readonly_fields = ['created_at', 'updated_at']
+    readonly_fields = ['created_at', 'updated_at', 'photo_preview']
+    fieldsets = (
+        ('Review Information', {
+            'fields': ('client', 'rating', 'text', 'visit_date')
+        }),
+        ('Photo', {
+            'fields': ('photo_preview', 'photo'),
+            'description': 'Upload review photo (optional)'
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def has_photo(self, obj):
+        return format_html('<span style="color: green;">✓</span>') if obj.photo else format_html('<span style="color: red;">✗</span>')
+    has_photo.short_description = 'Photo'
+
+    def photo_preview(self, obj):
+        if obj.photo:
+            return format_html('<img src="{}" style="max-width: 200px; border-radius: 5px;" />', obj.photo.url)
+        return 'No photo uploaded'
+    photo_preview.short_description = 'Preview'
 
 
 @admin.register(Vacancy)
